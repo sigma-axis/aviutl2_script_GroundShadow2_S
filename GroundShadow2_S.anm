@@ -1,0 +1,68 @@
+--[[
+MIT License
+Copyright (c) 2025 sigma-axis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+https://mit-license.org/
+]]
+
+--
+-- VERSION: v0.01
+--
+
+--track0:地面角度,-180,180,0,0.01
+--track1:光源角度,-180,180,-45,0.01
+--track2:光源傾斜,-800,800,0,0.01
+--track3:回転,-720,720,0,0.01
+--dialog:影色/col,_1=0x000000;影色強さ,_2=100;地面位置,_3={0,200,0};カメラ位置,_4={0,-200};視野幅(%),_5=100;影の濃さ(%),_6=50;前景透明度(%),_7=0;光分散,_8=5.0;境界ぼかし,_9=4.0;影の範囲,_10=0;先端ぼかし,_11=0;影位置移動,_12={0,0};精度,_13=529;PI,_0=nil;
+
+local obj, tonumber = obj, tonumber;
+
+-- set anchors.
+obj.setanchor("_3", 1, "star", "color", 0x40ff00, "xyz");
+obj.setanchor("_4", 1, "star", "color", 0x4040ff);
+obj.setanchor("_12", 1);
+
+-- take parameters.
+local ground_angle, light_angle, light_slope, rotation, col, col_alpha, ground_pos, camera_pos, camera_fov, alpha, front_alpha, conic_blur, edge_blur, len, tip_blur, pos, quality, max_w, max_h = obj.track0, obj.track1, obj.track2, obj.track3, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, nil, nil;
+_1 = nil; _2 = nil; _3 = nil; _4 = nil; _5 = nil; _6 = nil; _7 = nil; _8 = nil; _9 = nil; _10 = nil; _11 = nil; _12 = nil; _13 = nil;
+if _0 then
+	local t0, t1, t2, t3, PI_max_w, PI_max_h = _0[1], _0[2], _0[3], _0[4], _0.max_w, _0.max_h; _0 = nil;
+	ground_angle = tonumber(t0) or ground_angle;
+	light_angle = tonumber(t1) or light_angle;
+	light_slope = tonumber(t2) or light_slope;
+	rotation = tonumber(t3) or rotation;
+	max_w = tonumber(PI_max_w);
+	max_h = tonumber(PI_max_h);
+end
+
+-- adjust the anchor positions.
+local center_x, center_y, center_z =
+	obj.cx - obj.ox - (obj.getvalue("cx") or 0),
+	obj.cy - obj.oy - (obj.getvalue("cy") or 0),
+	obj.cz - obj.oz - (obj.getvalue("cz") or 0);
+ground_pos[1] = ground_pos[1] + center_x;
+ground_pos[2] = ground_pos[2] + center_y;
+ground_pos[3] = ground_pos[3] + center_z;
+camera_pos[1] = camera_pos[1] + center_x;
+camera_pos[2] = camera_pos[2] + center_y;
+
+-- main process.
+require("GroundShadow2_S").GroundShadow2_S(ground_angle, light_angle, light_slope, rotation, col, col_alpha, ground_pos, camera_pos, camera_fov, alpha, front_alpha, conic_blur, edge_blur, len, tip_blur, pos, quality, max_w, max_h);
