@@ -6,9 +6,9 @@
 
 [ダウンロードはこちら．](https://github.com/sigma-axis/aviutl2_script_GroundShadow2_S/releases) \[紹介動画準備中...\]
 
-![使用例1](TODO: )
+![使用例1](https://github.com/user-attachments/assets/a5057d40-4e49-4f54-9390-a7a86b8c061e)
 
-![使用例2](TODO: )
+![使用例2](https://github.com/user-attachments/assets/79a40754-4e61-442b-a6c5-ea967b5bb9a6)
 
 ##  動作要件
 
@@ -70,9 +70,9 @@
 
 AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが異なっていたり，一部がパラメタ設定ダイアログ経由での設定になりますが，特記事項がない限り基本的には同じ機能です．
 
-![AviUtl (無印) 版のGUI](TODO: ) ![AviUtl (無印) 版のパラメタ設定ダイアログ](TODO: )
+![AviUtl (無印) 版のGUI](https://github.com/user-attachments/assets/651001b6-a2e5-425f-a18a-f5e056c6dd24) ![AviUtl (無印) 版のパラメタ設定ダイアログ](https://github.com/user-attachments/assets/d1ddb59d-72a6-4a22-927a-07cbef56c50b)
 
-![AviUtl ExEdit2 版のGUI](TODO: )
+![AviUtl ExEdit2 版のGUI](https://github.com/user-attachments/assets/368b421d-a9bc-4e52-a4c4-e965df0ee0b7)
 
 ### `地面位置`
 
