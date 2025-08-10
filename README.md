@@ -9,6 +9,7 @@
 ![使用例1](https://github.com/user-attachments/assets/a5057d40-4e49-4f54-9390-a7a86b8c061e)
 
 ![使用例2](https://github.com/user-attachments/assets/79a40754-4e61-442b-a6c5-ea967b5bb9a6)
+- イラスト: 琴葉茜 琴葉葵 (c) AI Inc.
 
 ##  動作要件
 
