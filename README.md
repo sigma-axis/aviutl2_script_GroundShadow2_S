@@ -4,7 +4,7 @@
 
 無印の AviUtl と AviUtl ExEdit2 の両方に対応しています．
 
-[ダウンロードはこちら．](https://github.com/sigma-axis/aviutl2_script_GroundShadow2_S/releases) \[紹介動画準備中...\]
+[ダウンロードはこちら．](https://github.com/sigma-axis/aviutl2_script_GroundShadow2_S/releases) [紹介動画．](https://www.nicovideo.jp/watch/sm45275176)
 
 ![使用例1](https://github.com/user-attachments/assets/a5057d40-4e49-4f54-9390-a7a86b8c061e)
 
