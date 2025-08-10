@@ -22,7 +22,7 @@ SOFTWARE.
 
 https://mit-license.org/
 ]]
---information:GroundShadow2_S v0.01 (for beta5) by σ軸
+--information:GroundShadow2_S v1.00 (for beta5) by σ軸
 --label:装飾
 --value@ground_pos:地面位置,{0,200,0}
 --track@ground_angle:地面角度,-180,180,0,0.01
