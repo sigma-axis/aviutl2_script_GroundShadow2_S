@@ -24,7 +24,7 @@ https://mit-license.org/
 ]]
 
 --
--- VERSION: v1.00
+-- VERSION: v1.01
 --
 
 --------------------------------
@@ -34,7 +34,7 @@ local GLShaderKit = require "GLShaderKit";
 local obj, tonumber, math = obj, tonumber, math;
 
 local function error_mod(message)
-	message = "InlineScene_S.lua: "..message;
+	message = "GroundShadow2_S.lua: "..message;
 	debug_print(message);
 	local function err_mes()
 		obj.setfont("MS UI Gothic", 42, 3);
