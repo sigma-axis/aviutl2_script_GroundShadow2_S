@@ -2,7 +2,7 @@
 * text=auto
 
 ###############################################################################
-*.lua text eol=lf linguist-language=Lua working-tree-encoding=utf8
+*.lua text eol=lf linguist-language=Lua working-tree-encoding=cp932
 *.obj text eol=crlf linguist-language=Lua working-tree-encoding=cp932
 *.anm text eol=crlf linguist-language=Lua working-tree-encoding=cp932
 *.scn text eol=crlf linguist-language=Lua working-tree-encoding=cp932
@@ -14,3 +14,4 @@
 *.cam2 text eol=lf linguist-language=Lua working-tree-encoding=utf8
 *.tra2 text eol=lf linguist-language=Lua working-tree-encoding=utf8
 *.exa text eol=crlf linguist-language=ini working-tree-encoding=cp932
+*.frag text eol=lf linguist-language=glsl working-tree-encoding=utf8
