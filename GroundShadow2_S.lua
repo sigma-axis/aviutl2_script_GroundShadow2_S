@@ -24,7 +24,7 @@ https://mit-license.org/
 ]]
 
 --
--- VERSION: v1.01
+-- VERSION: v1.02
 --
 
 --------------------------------
@@ -42,7 +42,7 @@ local function error_mod(message)
 	end
 	return setmetatable({}, { __index = function(...) return err_mes end });
 end
-if not GLShaderKit.isInitialized() then return error_mod [=[‚±‚ÌƒfƒoƒCƒX‚Å‚Í GLShaderKit ‚ª—˜—p‚Å‚«‚Ü‚¹‚ñ!]=];
+if not GLShaderKit.isInitialized() then return error_mod [=[ã“ã®ãƒ‡ãƒã‚¤ã‚¹ã§ã¯ GLShaderKit ãŒåˆ©ç”¨ã§ãã¾ã›ã‚“!]=];
 else
 	local function lexical_comp(a, b, ...)
 		return a == nil and 0 or a < b and -1 or a > b and 1 or lexical_comp(...);
@@ -52,8 +52,8 @@ else
 	v1, v2, v3 = tonumber(v1), tonumber(v2), tonumber(v3);
 	-- version must be at least v0.4.0.
 	if not (v1 and v2 and v3) or lexical_comp(v1, 0, v2, 4, v3, 0) < 0 then
-		debug_print([=[Œ»İ‚Ì GLShaderKit ‚Ìƒo[ƒWƒ‡ƒ“: ]=]..version);
-		return error_mod [=[‚±‚Ì GLShaderKit ‚Ìƒo[ƒWƒ‡ƒ“‚Å‚Í“®ì‚µ‚Ü‚¹‚ñ!]=];
+		debug_print([=[ç¾åœ¨ã® GLShaderKit ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³: ]=]..version);
+		return error_mod [=[ã“ã® GLShaderKit ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã§ã¯å‹•ä½œã—ã¾ã›ã‚“!]=];
 	end
 end
 
@@ -249,32 +249,32 @@ local function GroundShadow2_S(ground_angle, light_angle, light_slope, rotation,
 
 	-- apply coloring.
 	if col_alpha > 0 then
-		obj.effect("’PF‰»", "‹P“x‚ğ•Û‚·‚é", 0, "‹­‚³", 100 * col_alpha, "color", col);
+		obj.effect("å˜è‰²åŒ–", "è¼åº¦ã‚’ä¿æŒã™ã‚‹", 0, "å¼·ã•", 100 * col_alpha, "color", col);
 	end
 
 	-- apply `len` and `tip_blur`
 	if len > 0 then
 		local L, rot = math.min(math.floor(0.5 + len), tip_blur), 180 / math.pi * rotation;
-		obj.effect("Î‚ßƒNƒŠƒbƒsƒ“ƒO",
-			"’†SX", ground_pos[1] - (len - L / 2) * sin_rot,
-			"’†SY", ground_pos[2] + (len - L / 2) * cos_rot,
-			"Šp“x", rot, "‚Ú‚©‚µ", L);
-		obj.effect("Î‚ßƒNƒŠƒbƒsƒ“ƒO",
-			"’†SX", ground_pos[1] + (len - L / 2) * sin_rot,
-			"’†SY", ground_pos[2] - (len - L / 2) * cos_rot,
-			"Šp“x", rot + 180, "‚Ú‚©‚µ", L);
+		obj.effect("æ–œã‚ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°",
+			"ä¸­å¿ƒX", ground_pos[1] - (len - L / 2) * sin_rot,
+			"ä¸­å¿ƒY", ground_pos[2] + (len - L / 2) * cos_rot,
+			"è§’åº¦", rot, "ã¼ã‹ã—", L);
+		obj.effect("æ–œã‚ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°",
+			"ä¸­å¿ƒX", ground_pos[1] + (len - L / 2) * sin_rot,
+			"ä¸­å¿ƒY", ground_pos[2] - (len - L / 2) * cos_rot,
+			"è§’åº¦", rot + 180, "ã¼ã‹ã—", L);
 	end
 
 	-- apply blurring
 	if edge_blur > 0 then
 		local i, f = math.modf(edge_blur);
-		obj.effect("‚Ú‚©‚µ", "”ÍˆÍ", i);
+		obj.effect("ã¼ã‹ã—", "ç¯„å›²", i);
 		if f > 0 then
 			local W, H = obj.getpixel();
 			obj.setoption("dst", "tmp", W + 2, H + 2);
 			obj.setoption("blend", "alpha_add");
 			obj.draw(0, 0, 0, 1, 1 - f);
-			obj.effect("‚Ú‚©‚µ", "”ÍˆÍ", 1);
+			obj.effect("ã¼ã‹ã—", "ç¯„å›²", 1);
 			obj.draw(0, 0, 0, 1, f);
 			obj.copybuffer("obj", "tmp");
 		end

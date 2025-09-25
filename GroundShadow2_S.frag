@@ -24,7 +24,7 @@ https://mit-license.org/
 */
 
 //
-// VERSION: v1.01
+// VERSION: v1.02
 //
 
 ////////////////////////////////
@@ -45,8 +45,10 @@ uniform int N;
 
 vec4 pick_color(vec2 pos)
 {
+	vec4 col = texture(texture0, pos / size_src);
 	vec2 t = clamp(min(pos, size_src - pos) + 0.5, 0, 1);
-	return t.x * t.y * texture(texture0, pos / size_src);
+	col.a *= t.x * t.y;
+	return col;
 }
 
 void main()
