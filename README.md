@@ -295,7 +295,7 @@ AviUtl (無印) 版と AviUtl ExEdit2 版で指定方法が異なります．
 
     ```lua
     --
-    -- VERSION: v1.02
+    -- VERSION: v1.03
     --
     ```
 
@@ -303,6 +303,12 @@ AviUtl (無印) 版と AviUtl ExEdit2 版で指定方法が異なります．
 
 
 ## 改版履歴
+
+- **v1.03 (for beta20)** (2025-11-17)
+
+  - AviUtl2 版でのシェーダー処理を一部簡略化．
+
+  - AviUtl2 beta20 で動作確認．
 
 - **v1.02 (for beta12)** (2025-09-25)
 

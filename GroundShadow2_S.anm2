@@ -22,7 +22,7 @@ SOFTWARE.
 
 https://mit-license.org/
 ]]
---information:GroundShadow2_S v1.02 (for beta12) by σ軸
+--information:GroundShadow2_S v1.03 (for beta20) by σ軸
 --label:装飾
 --value@ground_pos:地面位置,{0,200,0}
 --track@ground_angle:地面角度,-180,180,0,0.01
@@ -44,28 +44,18 @@ https://mit-license.org/
 --[[pixelshader@proj_blur:
 Texture2D src : register(t0);
 cbuffer constant0 : register(b0) {
-	float alpha1;
-	float2 ofs_src;
+	float2 size_src, ofs_src;
 	float3 cam;
+	float alpha1;
 	float4 plane;
 	float3 l_dir; float quality;
 	float3 l_ddir0, l_ddir1;
 };
+SamplerState s : register(s0);
 
-uint2 tex_size(Texture2D tex)
-{
-	uint w, h;
-	tex.GetDimensions(w, h);
-	return uint2(w, h);
-}
-const static float2 size = float2(tex_size(src)),
-	inv_size = 1 / size,
-	lbd = inv_size / 2, ubd = 1 - lbd;
-SamplerState s;
 float4 pick_color(float2 pos)
 {
-	float2 t = saturate(min(pos, size - pos) + 0.5);
-	return t.x * t.y * src.Sample(s, clamp(inv_size * pos, lbd, ubd));
+	return src.Sample(s, pos / size_src);
 }
 float4 proj_blur(float4 pos : SV_Position) : SV_Target
 {
@@ -349,19 +339,6 @@ if edge_blur > 0 then
 		obj.copybuffer("tempbuffer", "object");
 		obj.effect("ぼかし", "範囲", 1);
 		obj.pixelshader("fade", "object", { "tempbuffer", "object" }, { f });
-
-		-- currently "alpha_add" does not work as desired (beta5).
-		--[[
-		obj.setoption("drawtarget", "tempbuffer", obj.w + 2, obj.h + 2);
-		obj.setoption("blend", "alpha_add");
-		obj.draw(0, 0, 0, 1, 1 - f);
-		obj.effect("ぼかし", "範囲", 1);
-		obj.draw(0, 0, 0, 1, f);
-		obj.copybuffer("object", "tempbuffer");
-		obj.setoption("blend", "none");
-
-		obj.w, obj.h = obj.getpixel(); -- beta5 バグ対処: obj.w と obj.h が obj.copybuffer() で更新されない.
-		--]]
 	end
 end
 
@@ -516,13 +493,13 @@ if alpha > 0 then
 	end
 	obj.pixelshader("proj_blur", "tempbuffer", "object",
 	{
-		alpha1,
-		w1 / 2 - ofs_x2, h1 / 2 - ofs_y2, 0,
-		camera_pos[1] + ofs_x2, camera_pos[2] + ofs_y2, camera_fov > 0 and -1024 / camera_fov or 0, 0,
-		g_nx, g_ny, g_nz, g_nw - g_nx * ofs_x2 - g_ny * ofs_y2,
-		l_dx, l_dy, l_dz, N,
-		l_ddx0, l_ddy0, l_ddz0, 0, l_ddx1, l_ddy1, l_ddz1,
-	});
+		w1, h1; w1 / 2 - ofs_x2, h1 / 2 - ofs_y2;
+		camera_pos[1] + ofs_x2, camera_pos[2] + ofs_y2, camera_fov > 0 and -1024 / camera_fov or 0;
+		alpha1;
+		g_nx, g_ny, g_nz, g_nw - g_nx * ofs_x2 - g_ny * ofs_y2;
+		l_dx, l_dy, l_dz; N;
+		l_ddx0, l_ddy0, l_ddz0; 0; l_ddx1, l_ddy1, l_ddz1;
+	}, "copy", "clip");
 end
 
 -- combine the images.
