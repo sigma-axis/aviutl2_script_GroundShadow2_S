@@ -68,7 +68,7 @@ AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが
 
 ![AviUtl (無印) 版のGUI](https://github.com/user-attachments/assets/651001b6-a2e5-425f-a18a-f5e056c6dd24) ![AviUtl (無印) 版のパラメタ設定ダイアログ](https://github.com/user-attachments/assets/d1ddb59d-72a6-4a22-927a-07cbef56c50b)
 
-![AviUtl ExEdit2 版のGUI](https://github.com/user-attachments/assets/368b421d-a9bc-4e52-a4c4-e965df0ee0b7)
+<img width="500" height="772" alt="AviUtl ExEdit2 版のGUI" src="https://github.com/user-attachments/assets/84194f54-4d25-4a11-9ee3-cdffdc38b8fe" />
 
 ### `地面位置`
 
