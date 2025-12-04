@@ -40,7 +40,7 @@
 
   http://spring-fragrance.mints.ne.jp/aviutl
 
-  - `beta20` で動作確認済み．
+  - `beta22a` で動作確認済み．
 
 ## 導入方法
 
@@ -303,6 +303,12 @@ AviUtl (無印) 版と AviUtl ExEdit2 版で指定方法が異なります．
 
 
 ## 改版履歴
+
+- **v1.04 (for beta22a)** (2025-12-??)
+
+  - AviUtl2 版でパラメタをグループ化して整理．
+
+  - AviUtl2 beta22a で動作確認．
 
 - **v1.03 (for beta20)** (2025-11-17)
 

@@ -22,24 +22,28 @@ SOFTWARE.
 
 https://mit-license.org/
 ]]
---information:GroundShadow2_S v1.03 (for beta20) by σ軸
+--information:GroundShadow2_S v1.04-beta1 (for beta22a) by σ軸
 --label:装飾
---value@ground_pos:地面位置,{0,200,0}
 --track@ground_angle:地面角度,-180,180,0,0.01
 --track@light_angle:光源角度,-180,180,-45,0.01
 --track@light_slope:光源傾斜,-800,800,0,0.01
 --track@rotation:回転,-720,720,0,0.01
+--group:配置,true
+--value@ground_pos:地面位置,{0,200,0}
 --value@camera_pos:カメラ位置,{0,-200}
 --track@camera_fov:視野幅,0,10000,100,0.01
+--value@pos:影位置移動,{0,0}
+--group:色/透明度,false
 --color@col:影色,0x000000
 --track@col_alpha:影色強さ,0,100,100,0.01
 --track@alpha:影の濃さ,0,100,50,0.01
 --track@front_alpha:前景透明度,0,100,0,0.01
+--group:ぼかし設定,false
 --track@conic_blur:光分散,0,70,5,0.001
 --track@edge_blur:境界ぼかし,0,500,4,0.01
 --track@len:影の範囲,0,4000,0,0.1
 --track@tip_blur:先端ぼかし,0,2000,0,1
---value@pos:影位置移動,{0,0}
+--group:その他,false
 --value@PI:PI,{quality=529,max_w=2000,max_h=2000,}
 --[[pixelshader@proj_blur:
 Texture2D src : register(t0);
