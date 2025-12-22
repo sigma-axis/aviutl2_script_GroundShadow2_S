@@ -22,8 +22,9 @@ SOFTWARE.
 
 https://mit-license.org/
 ]]
---information:GroundShadow2_S v1.04 (for beta22a) by σ軸
+--information:GroundShadow2_S v1.05-beta1 (for beta22a) by σ軸
 --label:装飾
+--filter
 --track@ground_angle:地面角度,-180,180,0,0.01
 --track@light_angle:光源角度,-180,180,-45,0.01
 --track@light_slope:光源傾斜,-800,800,0,0.01
@@ -44,7 +45,10 @@ https://mit-license.org/
 --track@len:影の範囲,0,4000,0,0.1
 --track@tip_blur:先端ぼかし,0,2000,0,1
 --group:その他,false
---value@PI:PI,{quality=529,max_w=2000,max_h=2000,}
+--track@quality:精度,1,9801,529,1
+--track@max_w:画像最大幅,1024,16384,2000,1
+--track@max_h:画像最大高さ,1024,16384,2000,1
+--value@PI:PI,{}
 --[[pixelshader@proj_blur:
 Texture2D src : register(t0);
 cbuffer constant0 : register(b0) {
@@ -105,8 +109,6 @@ float4 fade(float4 pos : SV_Position) : SV_Target
 ]]
 local obj, tonumber, type, math = obj, tonumber, type, math;
 
-local quality, max_w, max_h = 529, obj.getinfo("image_max");
-
 -- set anchors.
 obj.setanchor("ground_pos", 1, "star", "color", 0x40ff00, "xyz");
 obj.setanchor("camera_pos", 1, "star", "color", 0x4040ff);
@@ -163,8 +165,8 @@ if type(PI.pos) == "table" then
 	pos[2] = tonumber(PI.pos[2]) or pos[2];
 end
 quality = tonumber(PI.quality) or quality;
-max_w = math.min(tonumber(PI.max_w) or max_w, max_w);
-max_h = math.min(tonumber(PI.max_h) or max_h, max_h);
+max_w = tonumber(PI.max_w) or max_w;
+max_h = tonumber(PI.max_h) or max_h;
 
 -- normalize paramters.
 ground_angle = math.pi / 180 * (ground_angle % 360);
@@ -180,8 +182,14 @@ conic_blur = math.max(conic_blur / 100, 0);
 len = math.max(len, 0);
 tip_blur = math.min(math.max(math.floor(0.5 + tip_blur), 0), 2000);
 quality = math.floor((math.max(quality, 1) ^ 0.5 - 1) / 2);
-max_w = math.max(math.floor(max_w), obj.w);
-max_h = math.max(math.floor(max_h), obj.h);
+if obj.getinfo("version") >= 2002400 and obj.getinfo("filter") then
+	max_w = obj.w;
+	max_h = obj.h;
+else
+	local W, H = obj.getinfo("image_max");
+	max_w = math.max(math.min(math.floor(max_w), W), obj.w);
+	max_h = math.max(math.min(math.floor(max_h), H), obj.h);
+end
 
 -- further calculation of parameters.
 local function normalize(x, y, z)
