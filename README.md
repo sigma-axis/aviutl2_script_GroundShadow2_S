@@ -72,7 +72,7 @@ AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが
 
 ![AviUtl (無印) 版のGUI](https://github.com/user-attachments/assets/651001b6-a2e5-425f-a18a-f5e056c6dd24) ![AviUtl (無印) 版のパラメタ設定ダイアログ](https://github.com/user-attachments/assets/d1ddb59d-72a6-4a22-927a-07cbef56c50b)
 
-<img width="500" height="772" alt="AviUtl ExEdit2 版のGUI" src="https://github.com/user-attachments/assets/84194f54-4d25-4a11-9ee3-cdffdc38b8fe" />
+<img width="500" height="878" alt="AviUtl ExEdit2 版のGUI" src="https://github.com/user-attachments/assets/58ee8690-a626-4f4d-b1fe-bc58244a447d" />
 
 ### 地面位置
 
@@ -234,7 +234,7 @@ AviUtl (無印) 版と AviUtl ExEdit2 版で指定方法が異なります．
 
 ####  AviUtl ExEdit2 版の `PI`
 
-テーブル型の中身として解釈され，各種パラメタの代替値として使用されます．
+テーブル型の中身として解釈され，各種パラメタの代替値として使用されます．初期値は空欄．
 
 ```lua
 {
