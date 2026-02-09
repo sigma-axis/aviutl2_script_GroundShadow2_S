@@ -246,25 +246,25 @@ AviUtl (無印) 版と AviUtl ExEdit2 版で指定方法が異なります．
 
 ```lua
 {
-  ground_pos = { x, y, z },    -- table 型で "地面位置" の項目を上書き，または nil.
-  ground_angle = num,          -- number 型で "地面角度" の項目を上書き，または nil.
-  light_angle = num,           -- number 型で "光源角度" の項目を上書き，または nil.
-  light_slope = num,           -- number 型で "光源傾斜" の項目を上書き，または nil.
-  rotation = num,              -- number 型で "回転" の項目を上書き，または nil.
-  camera_pos = { x, y },       -- table 型で "カメラ位置" の項目を上書き，または nil.
-  camera_fov = num,            -- number 型で "視野幅" の項目を上書き，または nil.
-  col = num,                   -- number 型で "影色" の項目を上書き，または nil.
-  col_alpha = num,             -- number 型で "影色強さ" の項目を上書き，または nil.
-  alpha = num,                 -- number 型で "影の濃さ" の項目を上書き，または nil.
-  front_alpha = num,           -- number 型で "前景透明度" の項目を上書き，または nil.
-  conic_blur = num,            -- number 型で "光分散" の項目を上書き，または nil.
-  edge_blur = num,             -- number 型で "境界ぼかし" の項目を上書き，または nil.
-  len = num,                   -- number 型で "影の範囲" の項目を上書き，または nil.
-  tip_blur = num,              -- number 型で "先端ぼかし" の項目を上書き，または nil.
-  pos = { x, y },              -- table 型で "影位置移動" の項目を上書き，または nil.,
-  quality = num,               -- number 型で "精度" の項目を上書き，または nil.
-  max_w = num,                 -- number 型で "画像最大幅" の項目を上書き，または nil.
-  max_h = num,                 -- number 型で "画像最大高さ" の項目を上書き，または nil.
+  ground_pos = { x, y, z }, -- table 型で "地面位置" の項目を上書き，または nil.
+  ground_angle = num,       -- number 型で "地面角度" の項目を上書き，または nil.
+  light_angle = num,        -- number 型で "光源角度" の項目を上書き，または nil.
+  light_slope = num,        -- number 型で "光源傾斜" の項目を上書き，または nil.
+  rotation = num,           -- number 型で "回転" の項目を上書き，または nil.
+  camera_pos = { x, y },    -- table 型で "カメラ位置" の項目を上書き，または nil.
+  camera_fov = num,         -- number 型で "視野幅" の項目を上書き，または nil.
+  col = num,                -- number 型で "影色" の項目を上書き，または nil.
+  col_alpha = num,          -- number 型で "影色強さ" の項目を上書き，または nil.
+  alpha = num,              -- number 型で "影の濃さ" の項目を上書き，または nil.
+  front_alpha = num,        -- number 型で "前景透明度" の項目を上書き，または nil.
+  conic_blur = num,         -- number 型で "光分散" の項目を上書き，または nil.
+  edge_blur = num,          -- number 型で "境界ぼかし" の項目を上書き，または nil.
+  len = num,                -- number 型で "影の範囲" の項目を上書き，または nil.
+  tip_blur = num,           -- number 型で "先端ぼかし" の項目を上書き，または nil.
+  pos = { x, y },           -- table 型で "影位置移動" の項目を上書き，または nil.,
+  quality = num,            -- number 型で "精度" の項目を上書き，または nil.
+  max_w = num,              -- number 型で "画像最大幅" の項目を上書き，または nil.
+  max_h = num,              -- number 型で "画像最大高さ" の項目を上書き，または nil.
 }
 ```
 - テキストボックスには冒頭末尾の波括弧 (`{}`) を省略して記述してください．
