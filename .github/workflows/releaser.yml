@@ -26,29 +26,43 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Set package version
+      run: |
+        cd assets
+        sed -i 's/\${ver}/${{ github.ref_name }}/g' package.ini
+
     - name: Pack and compress
       run: |
-        mkdir pack
-        mkdir pack/AviUtl1
-        mkdir pack/AviUtl2
-        cp *.anm2 pack/AviUtl2
-        cp *.anm pack/AviUtl1
-        cp *.lua pack/AviUtl1
-        cp *.frag pack/AviUtl1
-        cp *.md pack
-        cp LICENSE pack/LICENSE
-        cd pack
-        zip -r ../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip *
+        mkdir -p pack/au1
+        cp *.anm pack/au1
+        cp *.lua pack/au1
+        cp *.frag pack/au1
+        cp *.md pack/au1
+        cp LICENSE pack/au1
+        cd pack/au1
+        zip -r ../../aviutl_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip *
+        cd ../..
+        mkdir -p pack/au2/Script/${{ env.REPOSITORY_NAME }}
+        cp *.anm2 pack/au2/Script
+        cp *.md pack/au2/Script/${{ env.REPOSITORY_NAME }}
+        cp LICENSE pack/au2/Script/${{ env.REPOSITORY_NAME }}
+        cp assets/package.txt pack/au2
+        cp assets/package.ini pack/au2
+        cd pack/au2
+        zip -r ../../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip *
       # rename .zip file for downloading if necessary.
 
     - name: Prepare release notes
       id: release-notes
       run: |
         echo "name=${{ github.ref_name }} ($(TZ='${{ env.TIME_ZONE }}' date +'%Y-%m-%d'))" >> $GITHUB_OUTPUT
+        echo '### ダウンロードするファイル' >> ReleaseNotes.txt
+        echo '- AviUtl (無印) 版: `aviutl_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip`' >> ReleaseNotes.txt
+        echo '- AviUtl ExEdit2 版: `aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip`' >> ReleaseNotes.txt
         echo "### 更新内容" >> ReleaseNotes.txt
         phase=0
         IFS=$'\n'
-        cat pack/README.md | while read line; do
+        cat README.md | while read line; do
           if [[ $phase == 0 ]]; then
             if [[ $line =~ ^##*[[:space:]]{1,}'改版履歴'[[:space:]]*$ ]]; then phase=1; fi
           elif [[ $phase == 1 ]]; then
@@ -60,7 +74,7 @@ jobs:
         done
 
     - name: Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         name: ${{ steps.release-notes.outputs.name }}
         files: '*.zip'
