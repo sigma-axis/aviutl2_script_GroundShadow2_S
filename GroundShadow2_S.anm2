@@ -1,3 +1,4 @@
+-- under development for v1.10 (for beta43a) r1
 --[[
 MIT License
 Copyright (c) 2025 sigma-axis
@@ -25,15 +26,23 @@ https://mit-license.org/
 --information:GroundShadow2_S v1.05 (for beta25) by σ軸
 --label:装飾
 --filter
---track@ground_angle:地面角度,-180,180,0,0.01
---track@light_angle:光源角度,-180,180,-45,0.01
---track@light_slope:光源傾斜,-800,800,0,0.01
---track@rotation:回転,-720,720,0,0.01
+--require:2003801
+--track@ground_angle:地面角度,-1800,1800,0,0.01,,0.1
+--track@light_angle:光源角度,-1800,1800,-45,0.01,,0.1
+--track@light_slope:光源傾斜,-1600,1600,0,0.01,,0.125
+--track@rotation:回転,-3600,3600,0,0.01,,0.1
 --group:配置,true
---value@ground_pos:地面位置,{0,200,0}
---value@camera_pos:カメラ位置,{0,-200}
---track@camera_fov:視野幅,0,10000,100,0.01
---value@pos:影位置移動,{0,0}
+--track@ground_pos_x:地面位置X,-4000,4000,0,0.01,,0.25
+--track@ground_pos_y:地面位置Y,-4000,4000,200,0.01,,0.25
+--track@ground_pos_z:地面位置Z,-4000,4000,0,0.01,,0.25
+--trackgroup@ground_pos_x,ground_pos_y,ground_pos_z:ground_pos_xyz
+--track@camera_pos_x:カメラ位置X,-4000,4000,0,0.01,,0.25
+--track@camera_pos_y:カメラ位置Y,-4000,4000,-200,0.01,,0.25
+--trackgroup@camera_pos_x,camera_pos_y:camera_pos_xy
+--track@camera_fov:視野幅,0,10000,100,0.01,,0.02
+--track@pos_x:影位置移動X,-4000,4000,0,0.01,,0.25
+--track@pos_y:影位置移動Y,-4000,4000,0,0.01,,0.25
+--trackgroup@pos_x,pos_y:shadow_pos_xy
 --group:色/透明度,false
 --color@col:影色,0x000000
 --track@col_alpha:影色強さ,0,100,100,0.01
@@ -42,13 +51,17 @@ https://mit-license.org/
 --group:ぼかし設定,false
 --track@conic_blur:光分散,0,70,5,0.001
 --track@edge_blur:境界ぼかし,0,500,4,0.01
---track@len:影の範囲,0,4000,0,0.1
---track@tip_blur:先端ぼかし,0,2000,0,1
+--track@len:影の範囲,0,4000,0,0.1,,0.25
+--track@tip_blur:先端ぼかし,0,2000,0,1,,0.25
 --group:その他,false
 --track@quality:精度,1,9801,529,1
---track@max_w:画像最大幅,1024,16384,2000,1
---track@max_h:画像最大高さ,1024,16384,2000,1
+--track@max_w:画像最大幅,1024,16384,2000,1,,0.125
+--track@max_h:画像最大高さ,1024,16384,2000,1,,0.125
 --value@PI:PI,{}
+--group:互換対応(将来削除予定),false
+--value@ground_pos:地面位置,{}
+--value@camera_pos:カメラ位置,{}
+--value@pos:影位置移動,{}
 --[[pixelshader@proj_blur:
 Texture2D src : register(t0);
 cbuffer constant0 : register(b0) {
@@ -94,25 +107,12 @@ float4 proj_blur(float4 pos : SV_Position) : SV_Target
 	return saturate(alpha1 * color);
 }
 ]]
---[[pixelshader@fade:
-Texture2D src : register(t0);
-Texture2D dst : register(t1);
-cbuffer constant0 : register(b0) {
-	float rate;
-};
-float4 fade(float4 pos : SV_Position) : SV_Target
-{
-	return lerp(
-		src.Load(int3(pos.xy - 1, 0)),
-		dst.Load(int3(pos.xy, 0)), rate);
-}
-]]
 local obj, tonumber, type, math = obj, tonumber, type, math;
 
 -- set anchors.
-obj.setanchor("ground_pos", 1, "star", "color", 0x40ff00, "xyz");
-obj.setanchor("camera_pos", 1, "star", "color", 0x4040ff);
-obj.setanchor("pos", 1);
+obj.setanchor("ground_pos_x,ground_pos_y,ground_pos_z", 0, "arm", "color", 0x40ff00, "xyz");
+obj.setanchor("camera_pos_x,camera_pos_y", 0, "arm", "color", 0x4040ff);
+obj.setanchor("pos_x,pos_y", 0, "line", "color", 0xff4040);
 
 -- take parameters.
 --[==[
@@ -138,18 +138,23 @@ obj.setanchor("pos", 1);
 		max_h: number?,
 	}
 --]==]
+ground_pos_x = ground_pos[1] or ground_pos_x;
+ground_pos_y = ground_pos[2] or ground_pos_y;
+ground_pos_z = ground_pos[3] or ground_pos_z;
 if type(PI.ground_pos) == "table" then
-	ground_pos[1] = tonumber(PI.ground_pos[1]) or ground_pos[1];
-	ground_pos[2] = tonumber(PI.ground_pos[2]) or ground_pos[2];
-	ground_pos[3] = tonumber(PI.ground_pos[3]) or ground_pos[3];
+	ground_pos_x = tonumber(PI.ground_pos[1]) or ground_pos_x;
+	ground_pos_y = tonumber(PI.ground_pos[2]) or ground_pos_y;
+	ground_pos_z = tonumber(PI.ground_pos[3]) or ground_pos_z;
 end
 ground_angle = tonumber(PI.ground_angle) or ground_angle;
 light_angle = tonumber(PI.light_angle) or light_angle;
 light_slope = tonumber(PI.light_slope) or light_slope;
 rotation = tonumber(PI.rotation) or rotation;
+camera_pos_x = camera_pos[1] or camera_pos_x;
+camera_pos_y = camera_pos[2] or camera_pos_y;
 if type(PI.camera_pos) == "table" then
-	camera_pos[1] = tonumber(PI.camera_pos[1]) or camera_pos[1];
-	camera_pos[2] = tonumber(PI.camera_pos[2]) or camera_pos[2];
+	camera_pos_x = tonumber(PI.camera_pos[1]) or camera_pos_x;
+	camera_pos_y = tonumber(PI.camera_pos[2]) or camera_pos_y;
 end
 camera_fov = tonumber(PI.camera_fov) or camera_fov;
 col = tonumber(PI.col) or col;
@@ -160,9 +165,11 @@ conic_blur = tonumber(PI.conic_blur) or conic_blur;
 edge_blur = tonumber(PI.edge_blur) or edge_blur;
 len = tonumber(PI.len) or len;
 tip_blur = tonumber(PI.tip_blur) or tip_blur;
+pos_x = pos[1] or pos_x;
+pos_y = pos[2] or pos_y;
 if type(PI.pos) == "table" then
-	pos[1] = tonumber(PI.pos[1]) or pos[1];
-	pos[2] = tonumber(PI.pos[2]) or pos[2];
+	pos_x = tonumber(PI.pos[1]) or pos_x;
+	pos_y = tonumber(PI.pos[2]) or pos_y;
 end
 quality = tonumber(PI.quality) or quality;
 max_w = tonumber(PI.max_w) or max_w;
@@ -182,7 +189,7 @@ conic_blur = math.max(conic_blur / 100, 0);
 len = math.max(len, 0);
 tip_blur = math.min(math.max(math.floor(0.5 + tip_blur), 0), 2000);
 quality = math.floor((math.max(quality, 1) ^ 0.5 - 1) / 2);
-if obj.getinfo("version") >= 2002400 and obj.getinfo("filter") then
+if obj.getinfo("filter") then
 	max_w = obj.w;
 	max_h = obj.h;
 else
@@ -210,7 +217,7 @@ local l_dx, l_dy, l_dz, l_ddx0, l_ddy0, l_ddz0 do -- direction of the light and 
 
 	-- apply rotation.
 	g_nx, g_ny = -sin_rot * g_ny, cos_rot * g_ny;
-	g_nw = -(g_nx * ground_pos[1] + g_ny * ground_pos[2] + g_nz * ground_pos[3]);
+	g_nw = -(g_nx * ground_pos_x + g_ny * ground_pos_y + g_nz * ground_pos_z);
 
 	l_dx, l_dy =
 		cos_rot * l_dx - sin_rot * l_dy,
@@ -275,7 +282,7 @@ local function to_camera(x, y, z)
 ---@diagnostic disable-next-line: missing-return-value
 	if Z <= 0 then return nil end
 	local p = 1 / Z;
-	return p * x + (1 - p) * camera_pos[1], p * y + (1 - p) * camera_pos[2];
+	return p * x + (1 - p) * camera_pos_x, p * y + (1 - p) * camera_pos_y;
 end
 ---determines the direction to extend to contain backward ray.
 ---@param dx number defines the direction of the line.
@@ -289,7 +296,7 @@ local function to_back_camera(dx, dy, dz, x, y, z)
 	if dz == 0 then return 0, 0 end
 	if dz < 0 then dx, dy, dz = -dx, -dy, -dz end
 
-	x, y = x - camera_pos[1], y - camera_pos[2];
+	x, y = x - camera_pos_x, y - camera_pos_y;
 	if camera_fov > 0 then
 		local t = (z + 1024 / camera_fov) / dz;
 		dx, dy = t * dx, t * dy;
@@ -314,7 +321,7 @@ local function vanishing_pts(dx, dy, dz)
 			dy == 0 and 0 or dy < 0 and -max_h or max_h;
 	else
 		local p = 1024 / (camera_fov * dz);
-		local px, py = p * dx + camera_pos[1], p * dy + camera_pos[2];
+		local px, py = p * dx + camera_pos_x, p * dy + camera_pos_y;
 		return
 			math.min(math.max(px, -max_w), max_w),
 			math.min(math.max(py, -max_h), max_h);
@@ -334,12 +341,12 @@ end
 if len > 0 then
 	local L, rot = math.min(math.floor(0.5 + len), tip_blur), 180 / math.pi * rotation;
 	obj.effect("斜めクリッピング",
-		"中心X", ground_pos[1] - (len - L / 2) * sin_rot,
-		"中心Y", ground_pos[2] + (len - L / 2) * cos_rot,
+		"中心X", ground_pos_x - (len - L / 2) * sin_rot,
+		"中心Y", ground_pos_y + (len - L / 2) * cos_rot,
 		"角度", rot, "ぼかし", L);
 	obj.effect("斜めクリッピング",
-		"中心X", ground_pos[1] + (len - L / 2) * sin_rot,
-		"中心Y", ground_pos[2] - (len - L / 2) * cos_rot,
+		"中心X", ground_pos_x + (len - L / 2) * sin_rot,
+		"中心Y", ground_pos_y - (len - L / 2) * cos_rot,
 		"角度", rot + 180, "ぼかし", L);
 end
 
@@ -348,9 +355,13 @@ if edge_blur > 0 then
 	local i, f = math.modf(edge_blur);
 	obj.effect("ぼかし", "範囲", i);
 	if f > 0 then
-		obj.copybuffer("tempbuffer", "object");
+		obj.setoption("drawtarget", "tempbuffer", obj.w, obj.h);
+		obj.draw(0, 0, 0, 1, 1 - f);
+		obj.setoption("blend", "rgba_add");
 		obj.effect("ぼかし", "範囲", 1);
-		obj.pixelshader("fade", "object", { "tempbuffer", "object" }, { f });
+		obj.draw(0, 0, 0, 1, f);
+		obj.setoption("blend");
+		obj.copybuffer("object", "tempbuffer");
 	end
 end
 
@@ -365,10 +376,10 @@ local w1, h1, w2, h2, x2, y2, ray_range = obj.w, obj.h, nil, nil, nil, nil, 0 do
 			if cos_rot ~= 0 then
 				local tan_rot = sin_rot / cos_rot;
 				local Y1, Y2, Y3, Y4 =
-					(ground_pos[2] + ly) - tan_rot * (ground_pos[1] + lx - R),
-					(ground_pos[2] + ly) - tan_rot * (ground_pos[1] + lx - L),
-					(ground_pos[2] - ly) - tan_rot * (ground_pos[1] - lx - R),
-					(ground_pos[2] - ly) - tan_rot * (ground_pos[1] - lx - L);
+					(ground_pos_y + ly) - tan_rot * (ground_pos_x + lx - R),
+					(ground_pos_y + ly) - tan_rot * (ground_pos_x + lx - L),
+					(ground_pos_y - ly) - tan_rot * (ground_pos_x - lx - R),
+					(ground_pos_y - ly) - tan_rot * (ground_pos_x - lx - L);
 				if Y1 > Y2 then Y1, Y2 = Y2, Y1 end
 				if Y3 > Y4 then Y3, Y4 = Y4, Y3 end
 				T = math.max(T, math.min(Y1, Y3));
@@ -377,10 +388,10 @@ local w1, h1, w2, h2, x2, y2, ray_range = obj.w, obj.h, nil, nil, nil, nil, 0 do
 			if sin_rot ~= 0 then
 				local cot_rot = cos_rot / sin_rot;
 				local X1, X2, X3, X4 =
-					(ground_pos[1] + lx) - cot_rot * (ground_pos[2] + ly - B),
-					(ground_pos[1] + lx) - cot_rot * (ground_pos[2] + ly - T),
-					(ground_pos[1] - lx) - cot_rot * (ground_pos[2] - ly - B),
-					(ground_pos[1] - lx) - cot_rot * (ground_pos[2] - ly - T);
+					(ground_pos_x + lx) - cot_rot * (ground_pos_y + ly - B),
+					(ground_pos_x + lx) - cot_rot * (ground_pos_y + ly - T),
+					(ground_pos_x - lx) - cot_rot * (ground_pos_y - ly - B),
+					(ground_pos_x - lx) - cot_rot * (ground_pos_y - ly - T);
 				if X1 > X2 then X1, X2 = X2, X1 end
 				if X3 > X4 then X3, X4 = X4, X3 end
 				L = math.max(L, math.min(X1, X3));
@@ -464,7 +475,7 @@ local w1, h1, w2, h2, x2, y2, ray_range = obj.w, obj.h, nil, nil, nil, nil, 0 do
 	end
 
 	-- reposition.
-	L, T, R, B = L + pos[1], T + pos[2], R + pos[1], B + pos[2];
+	L, T, R, B = L + pos_x, T + pos_y, R + pos_x, B + pos_y;
 
 	-- convert to the extension length.
 	L, R = math.ceil(math.max(-L - w / 2, 0)), math.ceil(math.max(R - w / 2, 0));
@@ -490,7 +501,7 @@ end
 -- apply shader.
 obj.setoption("drawtarget", "tempbuffer", w2, h2);
 if alpha > 0 then
-	local ofs_x2, ofs_y2 = w2 / 2 + x2 + pos[1], h2 / 2 + y2 + pos[2];
+	local ofs_x2, ofs_y2 = w2 / 2 + x2 + pos_x, h2 / 2 + y2 + pos_y;
 	local N, alpha1 = math.min(quality, math.ceil((ray_range - 1) / 2)), alpha;
 	if N > 0 then
 		l_ddx0, l_ddy0, l_ddz0, l_ddx1, l_ddy1, l_ddz1 =
@@ -506,7 +517,7 @@ if alpha > 0 then
 	obj.pixelshader("proj_blur", "tempbuffer", "object",
 	{
 		w1, h1; w1 / 2 - ofs_x2, h1 / 2 - ofs_y2;
-		camera_pos[1] + ofs_x2, camera_pos[2] + ofs_y2, camera_fov > 0 and -1024 / camera_fov or 0;
+		camera_pos_x + ofs_x2, camera_pos_y + ofs_y2, camera_fov > 0 and -1024 / camera_fov or 0;
 		alpha1;
 		g_nx, g_ny, g_nz, g_nw - g_nx * ofs_x2 - g_ny * ofs_y2;
 		l_dx, l_dy, l_dz; N;
@@ -517,7 +528,7 @@ end
 -- combine the images.
 if front_alpha > 0 then
 	obj.copybuffer("object", cache_name_obj);
-	obj.setoption("blend", "none");
+	obj.setoption("blend");
 	obj.draw(x2, y2, 0, 1, front_alpha);
 end
 obj.copybuffer("object", "tempbuffer");
