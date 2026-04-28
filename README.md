@@ -46,7 +46,7 @@
 
   http://spring-fragrance.mints.ne.jp/aviutl
 
-  - `beta25` で動作確認済み．
+  - `beta43a` で動作確認済み．
 
 ## 導入方法
 
@@ -59,33 +59,24 @@
 
 - AviUtl ExEdit2 の場合
 
-  `GroundShadow2_S.anm2` ファイル対して，以下のいずれかの操作をしてください．
-
-  1.  AviUtl2 のプレビュー画面にドラッグ&ドロップ．
-
-  1.  以下のフォルダのいずれかにコピー．
-
-      1.  スクリプトフォルダ
-          - AviUtl2 のメニューの「その他」 :arrow_right: 「アプリケーションデータ」 :arrow_right: 「スクリプトフォルダ」で表示されます．
-      1.  (1) のフォルダにある任意の名前のフォルダ
+  ダウンロードした `aviutl2_script_GroundShadow2_S-v*.**.au2pkg.zip` を AviUtl2 のウィンドウにドラッグ & ドロップしてください．
 
   初期状態だと「フィルタ効果を追加」メニューの「装飾」に GroundShadow2_S が追加されています．
   - 「オブジェクト追加メニューの設定」の「ラベル」項目で分類を変更できます．
 
-### For non-Japanese speaking users
+### For non-Japanese speaking users of AviUtl ExEdit2
 
-You may be able to find language translation file for this script from [this repository](https://github.com/sigma-axis/aviutl2_translations_sigma-axis). 
-Translation files enable names and parameters of the scripts / filters to be displayed in other languages.
+You may be able to find language translation file for this script / plugin from [this repository](https://github.com/sigma-axis/aviutl2_translations_sigma-axis).
 
-Although, usage documentations for this script in languages other than Japanese are not available now.
+Translation files enable names, parameters and commands of the scripts / plugins to be displayed in other languages.
+
+Although, usage documentations for this script / plugin in languages other than Japanese are not available now.
 
 ##  パラメタの説明
 
 AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが異なっていたり，一部がパラメタ設定ダイアログ経由での設定になりますが，特記事項がない限り基本的には同じ機能です．
 
 ![AviUtl (無印) 版のGUI](https://github.com/user-attachments/assets/651001b6-a2e5-425f-a18a-f5e056c6dd24) ![AviUtl (無印) 版のパラメタ設定ダイアログ](https://github.com/user-attachments/assets/d1ddb59d-72a6-4a22-927a-07cbef56c50b)
-
-<img width="500" height="878" alt="AviUtl ExEdit2 版のGUI" src="https://github.com/user-attachments/assets/58ee8690-a626-4f4d-b1fe-bc58244a447d" />
 
 ### 地面位置
 
@@ -99,7 +90,15 @@ AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが
 
 - 座標は 3 次元で指定します．オブジェクトと平行で，オブジェクトの奥にある平面などに影を投射することもできます．
 
-オブジェクトの中心からの相対座標で `{<X座標>, <Y座標>, <Z座標>}` とピクセル単位で記述します．初期値は `{0,200,0}`.
+オブジェクトの中心からの相対座標でピクセル単位で指定．AviUtl (無印) 版と AviUtl2 版で指定方法が少し異なります:
+
+- AviUtl 無印版:
+
+  「地面位置」に `{<X座標>, <Y座標>, <Z座標>}` と記述．初期値は `{0,200,0}`.
+
+- AviUtl2 版:
+
+  「地面位置X/Y/Z」のトラックバーで指定．最小値は -4000, 最大値は 4000, 初期値は $(0, 200, 0)$.
 
 ### 地面角度
 
@@ -109,7 +108,9 @@ AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが
 |:---:|:---:|:---:|
 | 下り坂 | 水平 | 上り坂 |
 
-単位は度数法で最小値は -180, 最大値は 180, 初期値は 0.
+単位は度数法で，初期値は 0.
+- AviUtl 無印版の場合，最小値は -180, 最大値は 180.
+- AviUtl2 版の場合，最小値は -1800, 最大値は 1800.
 
 ### 光源角度 / 光源傾斜
 
@@ -120,15 +121,21 @@ AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが
 | 「光源角度」 | 上から下 | 手前から奥への水平方向 | 下から上 |
 | 「光源傾斜」 | 右から左 | 左右にまっすぐ | 左から右 |
 
-「光源角度」の単位は度数法で最小値は -180, 最大値は 180, 初期値は -45.
+「光源角度」の単位は度数法で，初期値は -45.
+- AviUtl 無印版の場合，最小値は -180, 最大値は 180.
+- AviUtl2 版の場合，最小値は -1800, 最大値は 1800.
 
-「光源傾斜」は傾斜量 (角度の正接 ($\tan$ 関数) の値) の % 単位で，最小値は -800 (約 $-82.87\degree$), 最大値は 800 (約 $82.87\degree$), 初期値は 0.
+「光源傾斜」は傾斜量 (角度の正接 ($\tan$ 関数) の値) の % 単位で，初期値は 0.
+- AviUtl 無印版の場合，最小値・最小値は ±800 (約 $\pm 82.87\degree$).
+- AviUtl2 版の場合，最小値・最小値は ±1600 (約 $\pm 86.42\degree$).
 
 ### 回転
 
 影を落とす先の「地面」の回転角を指定します．回転軸は $z$ 軸方向 (手前から奥への方向) で，時計回りに正．これに連動して，[「光源角度」や「光源傾斜」](#光源角度--光源傾斜)で指定した “光源” の角度も回転します．
 
-単位は度数法で最小値は -720, 最大値は 720, 初期値は 0.
+単位は度数法で，初期値は 0.
+- AviUtl 無印版の場合，最小値は -720, 最大値は 720.
+- AviUtl2 版の場合，最小値は -3600, 最大値は 3600.
 
 ### 「カメラ位置」
 
@@ -138,7 +145,15 @@ AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが
 
   - オブジェクトに拡大率や回転などが設定されていた場合，アンカー位置を正しく取得できない場合があります．
 
-オブジェクトの中心からの相対座標で `{<X座標>, <Y座標>}` とピクセル単位で記述します．初期値は `{0,-200}`.
+オブジェクトの中心からの相対座標でピクセル単位で指定．AviUtl (無印) 版と AviUtl2 版で指定方法が少し異なります:
+
+- AviUtl 無印版:
+
+  「カメラ位置」に `{<X座標>, <Y座標>}` と記述．初期値は `{0,-200}`.
+
+- AviUtl2 版:
+
+  「カメラ位置X/Y」のトラックバーで指定．最小値は -4000, 最大値は 4000, 初期値は $(0, -200)$.
 
 ### 視野幅
 
@@ -206,6 +221,16 @@ AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが
   - AviUtl (無印) の場合，オブジェクトに拡大率や回転などが設定されていると，アンカー位置を正しく取得できない場合があります．
 
 `{<X移動量>, <Y移動量>}` の書式でピクセル単位で記述します．初期値は `{0,0}` (移動なし).
+
+移動量をピクセル単位で指定．AviUtl (無印) 版と AviUtl2 版で指定方法が少し異なります:
+
+- AviUtl 無印版:
+
+  「影位置移動」に `{<X移動量>, <Y移動量>}` と記述．初期値は `{0,0}` (移動なし).
+
+- AviUtl2 版:
+
+  「影位置移動X/Y」のトラックバーで指定．最小値は -4000, 最大値は 4000, 初期値は $(0,0)$ (移動なし).
 
 ### 精度
 
@@ -315,14 +340,29 @@ AviUtl (無印) 版と AviUtl ExEdit2 版で指定方法が異なります．
 
     ```lua
     --
-    -- VERSION: v1.05
+    -- VERSION: v1.10
     --
     ```
 
     ファイル間でバージョンが異なる場合，更新漏れの可能性があるためご確認ください．
 
 
-## 改版履歴
+##  次の改版予定
+
+- **v1.10 (for beta43b)** (2026-??-??)
+
+  - AviUtl2 版で，前回更新からの AviUtl2 本体のスクリプト機能追加を適用 (`--trackgroup` 指定やトラックバーの操作倍率など). それに伴って一部トラックバーの最大・最小の範囲を拡大．
+
+  - AviUtl2 版で **一部パラメタを互換対応扱い (非推奨) に**:
+    1.  「地面位置」，代わりにトラックバーの「地面位置X/Y/Z」を追加．
+    1.  「カメラ位置」，代わりにトラックバーの「カメラ位置X/Y」を追加．
+    1.  「影位置移動」，代わりにトラックバーの「影位置移動X/Y」を追加．
+
+    以前のものよりもトラックバーのほうが，アニメーションさせることができるなど利点がある一方，`beta37` より前だと複数アンカーをトラックバーに割り当てられなかった仕様の名残です．**将来的に削除するつもりなので，これらを利用しているプロジェクトやプリセット，スクリプトなどは，新規追加のパラメタに移行をお願いします．**
+
+  - AviUtl2 beta43b で動作確認．
+
+##  改版履歴
 
 - **v1.05 (for beta25)** (2025-12-22)
 
@@ -372,7 +412,7 @@ AviUtl (無印) 版と AviUtl ExEdit2 版で指定方法が異なります．
 
 The MIT License (MIT)
 
-Copyright (C) 2025 sigma-axis
+Copyright (C) 2025-2026 sigma-axis
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
