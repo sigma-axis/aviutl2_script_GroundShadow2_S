@@ -1,4 +1,4 @@
--- under development for v1.10 (for beta43a) r1
+-- under development for v1.10 (for beta43b) r2
 --[[
 MIT License
 Copyright (c) 2025 sigma-axis
@@ -27,10 +27,10 @@ https://mit-license.org/
 --label:装飾
 --filter
 --require:2003801
---track@ground_angle:地面角度,-1800,1800,0,0.01,,0.1
---track@light_angle:光源角度,-1800,1800,-45,0.01,,0.1
+--track@ground_angle:地面角度,-1800,1800,0,0.01,水平,0.1
+--track@light_angle:光源角度,-1800,1800,-45,0.01,水平,0.1
 --track@light_slope:光源傾斜,-1600,1600,0,0.01,,0.125
---track@rotation:回転,-3600,3600,0,0.01,,0.1
+--track@rotation:回転,-3600,3600,0,0.01,水平,0.05
 --group:配置,true
 --track@ground_pos_x:地面位置X,-4000,4000,0,0.01,,0.25
 --track@ground_pos_y:地面位置Y,-4000,4000,200,0.01,,0.25
@@ -39,7 +39,7 @@ https://mit-license.org/
 --track@camera_pos_x:カメラ位置X,-4000,4000,0,0.01,,0.25
 --track@camera_pos_y:カメラ位置Y,-4000,4000,-200,0.01,,0.25
 --trackgroup@camera_pos_x,camera_pos_y:camera_pos_xy
---track@camera_fov:視野幅,0,10000,100,0.01,,0.02
+--track@camera_fov:視野幅,0,10000,100,0.01,直投影,0.02
 --track@pos_x:影位置移動X,-4000,4000,0,0.01,,0.25
 --track@pos_y:影位置移動Y,-4000,4000,0,0.01,,0.25
 --trackgroup@pos_x,pos_y:shadow_pos_xy
@@ -51,7 +51,7 @@ https://mit-license.org/
 --group:ぼかし設定,false
 --track@conic_blur:光分散,0,70,5,0.001
 --track@edge_blur:境界ぼかし,0,500,4,0.01
---track@len:影の範囲,0,4000,0,0.1,,0.25
+--track@len:影の範囲,0,4000,0,0.1,全体,0.25
 --track@tip_blur:先端ぼかし,0,2000,0,1,,0.25
 --group:その他,false
 --track@quality:精度,1,9801,529,1
