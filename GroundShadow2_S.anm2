@@ -1,4 +1,4 @@
--- under development for v1.11 r1
+-- under development for v1.20 r2
 --[[
 MIT License
 Copyright (c) 2025 sigma-axis
@@ -53,6 +53,9 @@ https://mit-license.org/
 --track@edge_blur:境界ぼかし,0,500,4,0.01
 --track@len:影の範囲,0,4000,0,0.1,全体,0.25
 --track@tip_blur:先端ぼかし,0,2000,0,1,,0.25
+--group:描画設定,false
+--check@draw:影を別オブジェクトで描画,false
+--select@blend:合成モード=0,通常=0,加算=1,減算=2,乗算=3,スクリーン=4,オーバーレイ=5,比較(明)=6,比較(暗)=7,輝度=8,色差=9,陰影=10,明暗=11,差分=12
 --group:その他,false
 --track@quality:精度,1,9801,529,1
 --track@max_w:画像最大幅,1024,16384,2000,1,,0.125
@@ -117,27 +120,34 @@ obj.setanchor("pos_x,pos_y", 0, "line", "color", 0xff4040);
 -- take parameters.
 --[==[
 	PI = {
-		ground_pos: table? { x, y, z },
-		ground_angle: number?,
-		light_angle: number?,
-		light_slope: number?,
-		rotation: number?,
-		camera_pos: table? { x, y },
-		camera_fov: number?,
-		col: number?,
-		col_alpha: number?,
-		alpha: number?,
-		front_alpha: number?,
-		conic_blur: number?,
-		edge_blur: number?,
-		len: number?,
-		tip_blur: number?,
-		pos: table? { x, y },
-		quality: number?,
-		max_w: number?,
-		max_h: number?,
+		ground_pos:		table? { x, y, z },
+		ground_angle:	number?,
+		light_angle:	number?,
+		light_slope:	number?,
+		rotation:		number?,
+		camera_pos:		table? { x, y },
+		camera_fov:		number?,
+		col:			number?,
+		col_alpha:		number?,
+		alpha:			number?,
+		front_alpha:	number?,
+		conic_blur:		number?,
+		edge_blur:		number?,
+		len:			number?,
+		tip_blur:		number?,
+		pos:			table? { x, y },
+		draw:			boolean|number|nil,
+		blend:			string?,
+		quality:		number?,
+		max_w:			number?,
+		max_h:			number?,
 	}
 --]==]
+local function as_bool(t, v)
+	if type(t) == "boolean" then return t;
+	elseif type(t) == "number" then return t ~= 0;
+	else return v end
+end
 ground_pos_x = ground_pos[1] or ground_pos_x;
 ground_pos_y = ground_pos[2] or ground_pos_y;
 ground_pos_z = ground_pos[3] or ground_pos_z;
@@ -171,6 +181,16 @@ if type(PI.pos) == "table" then
 	pos_x = tonumber(PI.pos[1]) or pos_x;
 	pos_y = tonumber(PI.pos[2]) or pos_y;
 end
+draw = as_bool(PI.draw, draw);
+if type(PI.blend) == "string" then
+	local name2num = {
+		["通常"] = 0, ["加算"] = 1, ["減算"] = 2, ["乗算"] = 3, ["スクリーン"] = 4, ["オーバーレイ"] = 5,
+		["比較(明)"] = 6, ["比較(暗)"] = 7, ["輝度"] = 8, ["色差"] = 9,
+		["陰影"] = 10, ["明暗"] = 11, ["差分"] = 12,
+		["alpha_add"] = 100, ["alpha_max"] = 101, ["alpha_sub"] = 102, ["alpha_add2"] = 103, ["rgba_add"] = 104,
+	};
+	blend = name2num[PI.blend] or blend;
+end
 quality = tonumber(PI.quality) or quality;
 max_w = tonumber(PI.max_w) or max_w;
 max_h = tonumber(PI.max_h) or max_h;
@@ -188,6 +208,11 @@ front_alpha = math.min(math.max(1 - front_alpha / 100, 0), 1);
 conic_blur = math.max(conic_blur / 100, 0);
 len = math.max(len, 0);
 tip_blur = math.min(math.max(math.floor(0.5 + tip_blur), 0), 2000);
+blend = ({
+	[0] = "none", "add", "sub", "mul", "screen", "overlay",
+	"light", "dark", "brightness", "chroma", "shadow", "light_dark", "diff",
+	[100] = "alpha_add", [101] = "alpha_max", [102] = "alpha_sub", [103] = "alpha_add2", [104] = "rgba_add",
+})[blend] or "none";
 quality = math.floor((math.max(quality, 1) ^ 0.5 - 1) / 2);
 if obj.getinfo("filter") then
 	max_w = obj.w;
@@ -525,13 +550,27 @@ if alpha > 0 then
 	}, "copy", "clip");
 end
 
--- combine the images.
+-- adjust the center.
+obj.cx, obj.cy = obj.cx + x2, obj.cy + y2;
+
+if draw then
+	-- draw only the shadow.
+	obj.copybuffer("object", "tempbuffer");
+	obj.setoption("drawtarget", "framebuffer");
+	obj.setoption("blend", blend);
+	obj.draw();
+	obj.setoption("blend");
+	obj.setoption("draw_state", false);
+
+	obj.setoption("drawtarget", "tempbuffer", w, h);
+	obj.cx, obj.cy = obj.cx - x2, obj.cy - y2;
+	x2, y2 = 0, 0;
+end
+
 if front_alpha > 0 then
+	-- combine the images.
 	obj.copybuffer("object", cache_name_obj);
 	obj.setoption("blend");
 	obj.draw(x2, y2, 0, 1, front_alpha);
 end
 obj.copybuffer("object", "tempbuffer");
-
--- adjust the center.
-obj.cx, obj.cy = obj.cx + x2, obj.cy + y2;
