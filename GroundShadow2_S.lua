@@ -1,4 +1,3 @@
--- under development for v1.20 r3
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -25,7 +24,7 @@ https://mit-license.org/
 ]]
 
 --
--- VERSION: v1.10
+-- VERSION: v1.20
 --
 
 --------------------------------
