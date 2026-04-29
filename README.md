@@ -76,7 +76,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 AviUtl (無印) 版では AviUtl ExEdit2 版と比べてパラメタの並びが異なっていたり，一部がパラメタ設定ダイアログ経由での設定になりますが，特記事項がない限り基本的には同じ機能です．
 
-![AviUtl (無印) 版のGUI](https://github.com/user-attachments/assets/651001b6-a2e5-425f-a18a-f5e056c6dd24) ![AviUtl (無印) 版のパラメタ設定ダイアログ](https://github.com/user-attachments/assets/d1ddb59d-72a6-4a22-927a-07cbef56c50b)
+![AviUtl (無印) 版のGUI](https://github.com/user-attachments/assets/87d5dceb-d0da-4acd-a436-3c3ded0baab6) ![AviUtl (無印) 版のパラメタ設定ダイアログ](https://github.com/user-attachments/assets/b519f00b-18b4-489c-b9d3-8bd0f155e7d9)
 
 ### 地面位置
 
