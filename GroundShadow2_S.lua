@@ -1,3 +1,4 @@
+-- under development for v1.20 r3
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -31,7 +32,7 @@ https://mit-license.org/
 
 local GLShaderKit = require "GLShaderKit";
 
-local obj, tonumber, math = obj, tonumber, math;
+local obj, tonumber, type, math = obj, tonumber, type, math;
 
 local function error_mod(message)
 	message = "GroundShadow2_S.lua: "..message;
@@ -180,7 +181,7 @@ local function vanishing_pts(camera_pos, camera_fov, dx, dy, dz)
 	end
 end
 
-local function GroundShadow2_S(ground_angle, light_angle, light_slope, rotation, col, col_alpha, ground_pos, camera_pos, camera_fov, alpha, front_alpha, conic_blur, edge_blur, len, tip_blur, pos, quality, max_w, max_h)
+local function GroundShadow2_S(ground_angle, light_angle, light_slope, rotation, col, col_alpha, ground_pos, camera_pos, camera_fov, alpha, front_alpha, conic_blur, edge_blur, len, tip_blur, pos, draw, blend, quality, max_w, max_h)
 	-- default parameters.
 	ground_angle = tonumber(ground_angle) or 0;
 	light_angle = tonumber(light_angle) or -45;
@@ -218,6 +219,17 @@ local function GroundShadow2_S(ground_angle, light_angle, light_slope, rotation,
 	quality = math.floor((math.max(quality, 1) ^ 0.5 - 1) / 2);
 	max_w = math.min(math.max(max_w, 0), max_width);
 	max_h = math.min(math.max(max_h, 0), max_height);
+	if draw then
+		if type(blend) == "string" then
+			local name2num = {
+				["通常"] = 0, ["加算"] = 1, ["減算"] = 2, ["乗算"] = 3, ["スクリーン"] = 4, ["オーバーレイ"] = 5,
+				["比較(明)"] = 6, ["比較(暗)"] = 7, ["輝度"] = 8, ["色差"] = 9,
+				["陰影"] = 10, ["明暗"] = 11, ["差分"] = 12,
+				["alpha_add"] = "alpha_add", ["alpha_max"] = "alpha_max", ["alpha_sub"] = "alpha_sub", ["alpha_add2"] = "alpha_add2",
+			};
+			blend = name2num[blend] or 0;
+		elseif type(blend) ~= "number" then blend = 0 end
+	end
 
 	-- further calculation of parameters.
 	local w, h = obj.getpixel();
@@ -467,16 +479,30 @@ local function GroundShadow2_S(ground_angle, light_angle, light_slope, rotation,
 		obj.copybuffer("tmp", "obj");
 	else obj.setoption("dst", "tmp", w2, h2) end
 
-	-- combine the images.
+	-- adjust the center.
+	obj.cx, obj.cy = obj.cx + x2, obj.cy + y2;
+
+	if draw then
+		-- draw only the shadow.
+		obj.copybuffer("obj", "tmp");
+		obj.setoption("drawtarget", "framebuffer");
+		obj.setoption("blend", blend);
+		obj.draw();
+		obj.setoption("blend", 0);
+		obj.setoption("draw_state", false);
+
+		obj.setoption("dst", "tmp", w, h);
+		obj.cx, obj.cy = obj.cx - x2, obj.cy - y2;
+		x2, y2 = 0, 0;
+	end
+
 	if front_alpha > 0 then
+		-- combine the images.
 		obj.copybuffer("obj", cache_name_obj);
 		obj.setoption("blend", 0);
 		obj.draw(x2, y2, 0, 1, front_alpha);
 	end
 	obj.copybuffer("obj", "tmp");
-
-	-- adjust the center.
-	obj.cx, obj.cy = obj.cx + x2, obj.cy + y2;
 end
 
 return {
