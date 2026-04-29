@@ -1,3 +1,4 @@
+-- under development for v1.11 r1
 --[[
 MIT License
 Copyright (c) 2025 sigma-axis
@@ -25,7 +26,7 @@ https://mit-license.org/
 --information:GroundShadow2_S v1.10 (for beta43b) by σ軸
 --label:装飾
 --filter
---require:2003801
+--require:2003900
 --track@ground_angle:地面角度,-1800,1800,0,0.01,水平,0.1
 --track@light_angle:光源角度,-1800,1800,-45,0.01,水平,0.1
 --track@light_slope:光源傾斜,-1600,1600,0,0.01,,0.125
