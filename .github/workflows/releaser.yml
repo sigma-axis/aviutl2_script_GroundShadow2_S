@@ -22,7 +22,7 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
 
@@ -31,25 +31,28 @@ jobs:
         cd assets
         sed -i 's/\${ver}/${{ github.ref_name }}/g' package.ini
 
-    - name: Pack and compress
+    - name: Pack and compress (AviUtl 1)
       run: |
-        mkdir -p pack/au1
-        cp *.anm pack/au1
-        cp *.lua pack/au1
-        cp *.frag pack/au1
-        cp *.md pack/au1
-        cp LICENSE pack/au1
-        cd pack/au1
-        zip -r ../../aviutl_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip *
-        cd ../..
-        mkdir -p pack/au2/Script/${{ env.REPOSITORY_NAME }}
-        cp *.anm2 pack/au2/Script
-        cp *.md pack/au2/Script/${{ env.REPOSITORY_NAME }}
-        cp LICENSE pack/au2/Script/${{ env.REPOSITORY_NAME }}
-        cp assets/package.txt pack/au2
-        cp assets/package.ini pack/au2
-        cd pack/au2
-        zip -r ../../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip *
+        mkdir -p pack_au1
+        cp *.anm pack_au1
+        cp *.lua pack_au1
+        cp *.frag pack_au1
+        cp *.md pack_au1
+        cp LICENSE pack_au1
+        cd pack_au1
+        zip -r ../aviutl_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip *
+      # rename .zip file for downloading if necessary.
+
+    - name: Pack and compress (AviUtl 2)
+      run: |
+        mkdir -p pack_au2/Script/${{ env.REPOSITORY_NAME }}
+        cp *.anm2 pack_au2/Script
+        cp *.md pack_au2/Script/${{ env.REPOSITORY_NAME }}
+        cp LICENSE pack_au2/Script/${{ env.REPOSITORY_NAME }}
+        cp assets/package.txt pack_au2
+        cp assets/package.ini pack_au2
+        cd pack_au2
+        zip -r ../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip *
       # rename .zip file for downloading if necessary.
 
     - name: Prepare release notes
