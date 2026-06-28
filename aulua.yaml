@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/karoterra/aviutl2-aulua/refs/heads/main/schema/aulua.schema.json
+project:
+  variables:
+    NAME: GroundShadow2_S
+    AUTHOR: σ軸
+    LEAST_AVIUTL_VERSION: "2005000"
+    LEAST_AVIUTL_VERSION_STRING: beta50
+
+package:
+  id: GroundShadow2_S
+  name: 影射影スクリプト GroundShadow2_S
+  version: v1.21-dev (for beta51)
+  information: "{name} {version} by {AUTHOR}"
+  script_sub_dir: ""
+  uninstall_sub_folder_file: false
+  message:
+    text: |
+      # 影射影スクリプト GroundShadow2_S
+
+      影を立体的に地面へ落として描画するフィルタ効果です．地面だけでなく壁や天井など任意角度の平面に影を落とせます．
+
+      公開ページ:
+      https://github.com/sigma-axis/aviutl2_script_GroundShadow2_S
+
+      紹介動画:
+      https://www.nicovideo.jp/watch/sm45275176
+
+      お願い:
+      ニコニコ動画での親作品登録をしていただけると励みになります．
+      作品 ID: sm45275176
+
+  assets:
+    - src: README.md
+      dest: Script/{id}/README.md
+    - src: LICENSE
+      dest: Script/{id}/LICENSE
+  file_name: package.au2pkg.zip
+
+build:
+  out_dir: build
+
+scripts:
+  - name: GroundShadow2_S.anm2
+    sources:
+      - path: script/au2/preamble.lua
+      - path: script/au2/main.lua

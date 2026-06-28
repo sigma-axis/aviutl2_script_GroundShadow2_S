@@ -2,7 +2,7 @@ name: Make Release
 on:
   push:
     tags:
-    - '*'
+      - '*'
 
 env:
   REPOSITORY_NAME: GroundShadow2_S
@@ -14,71 +14,110 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    name: Build with aulua
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Setup aulua
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag=$(gh api repos/karoterra/aviutl2-aulua/releases/latest --jq '.tag_name')
+          archive="aulua-${tag}-windows-x64.zip"
+          mkdir -p aulua
+          gh release download -R karoterra/aviutl2-aulua $tag -p $archive -D aulua
+          unzip aulua/$archive -d aulua
+          echo `pwd`/aulua > $GITHUB_PATH
+
+      - name: Create package
+        run: aulua pack
+
+      - name: Upload the build as artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: build/package.au2pkg.zip
+          archive: false
+
   release:
     name: Create Release
     if: github.event_name == 'push' && github.ref_type == 'tag'
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-    - uses: actions/checkout@v7
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
 
-    - name: Set package version
-      run: |
-        cd assets
-        sed -i 's/\${ver}/${{ github.ref_name }}/g' package.ini
+      - name: Set package version (AviUtl 1)
+        run: |
+          cd script/au1
+          tag="${{ github.ref_name }}"
+          ver="${tag%%-*}"
+          for f in GroundShadow2_S.anm GroundShadow2_S.lua GroundShadow2_S.frag; do
+            [ -f "$f" ] || continue
+            sed -i 's/\${ver}/'"$ver"'/g' "$f"
+          done
 
-    - name: Pack and compress (AviUtl 1)
-      run: |
-        mkdir -p pack_au1
-        cp *.anm pack_au1
-        cp *.lua pack_au1
-        cp *.frag pack_au1
-        cp *.md pack_au1
-        cp LICENSE pack_au1
-        cd pack_au1
-        zip -r ../aviutl_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip *
-      # rename .zip file for downloading if necessary.
+      - name: Pack and compress (AviUtl 1)
+        run: |
+          mkdir -p pack_au1
+          cp script/au1/*.anm pack_au1
+          cp script/au1/*.lua pack_au1
+          cp script/au1/*.frag pack_au1
+          cp *.md pack_au1
+          cp LICENSE pack_au1
+          cd pack_au1
+          zip -r ../aviutl_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip *
+        # rename .zip file for downloading if necessary.
 
-    - name: Pack and compress (AviUtl 2)
-      run: |
-        mkdir -p pack_au2/Script/${{ env.REPOSITORY_NAME }}
-        cp *.anm2 pack_au2/Script
-        cp *.md pack_au2/Script/${{ env.REPOSITORY_NAME }}
-        cp LICENSE pack_au2/Script/${{ env.REPOSITORY_NAME }}
-        cp assets/package.txt pack_au2
-        cp assets/package.ini pack_au2
-        cd pack_au2
-        zip -r ../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip *
-      # rename .zip file for downloading if necessary.
+      - name: Download the package as an artifact (AviUtl 2)
+        uses: actions/download-artifact@v8
+        with:
+          path: pack_au2
+          merge-multiple: true # assuming a single artifact.
+          skip-decompress: true
 
-    - name: Prepare release notes
-      id: release-notes
-      run: |
-        echo "name=${{ github.ref_name }} ($(TZ='${{ env.TIME_ZONE }}' date +'%Y-%m-%d'))" >> $GITHUB_OUTPUT
-        echo '### ダウンロードするファイル' >> ReleaseNotes.txt
-        echo '- AviUtl (無印) 版: `aviutl_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip`' >> ReleaseNotes.txt
-        echo '- AviUtl ExEdit2 版: `aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip`' >> ReleaseNotes.txt
-        echo "### 更新内容" >> ReleaseNotes.txt
-        phase=0
-        IFS=$'\n'
-        cat README.md | while read line; do
-          if [[ $phase == 0 ]]; then
-            if [[ $line =~ ^##*[[:space:]]{1,}'改版履歴'[[:space:]]*$ ]]; then phase=1; fi
-          elif [[ $phase == 1 ]]; then
-            if [[ $line =~ ^-[[:space:]] ]]; then phase=2; fi
-          elif [[ $line =~ ^(-|##*)[[:space:]] ]]; then break
-          else
-            echo ${line:2} >> ReleaseNotes.txt
-          fi
-        done
+      - name: Prepare package (AviUtl 2)
+        run: |
+          cd pack_au2
+          cp package.au2pkg.zip ../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip
+        # rename .zip file for downloading if necessary.
 
-    - name: Release
-      uses: softprops/action-gh-release@v3
-      with:
-        name: ${{ steps.release-notes.outputs.name }}
-        files: '*.zip'
-        body_path: ReleaseNotes.txt
+      - name: Prepare release notes
+        id: release-notes
+        run: |
+          echo "name=${{ github.ref_name }} ($(TZ='${{ env.TIME_ZONE }}' date +'%Y-%m-%d'))" >> $GITHUB_OUTPUT
+          echo '### ダウンロードするファイル' >> ReleaseNotes.txt
+          echo '- AviUtl (無印) 版: `aviutl_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip`' >> ReleaseNotes.txt
+          echo '- AviUtl ExEdit2 版: `aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip`' >> ReleaseNotes.txt
+          echo "### 更新内容" >> ReleaseNotes.txt
+          phase=0
+          while IFS= read -r line; do
+            if [[ $phase == 0 ]]; then
+              if [[ $line =~ ^##*[[:space:]]{1,}'改版履歴'[[:space:]]*$ ]]; then phase=1; fi
+            elif [[ $phase == 1 ]]; then
+              if [[ $line =~ ^-[[:space:]] ]]; then phase=2; fi
+            elif [[ $line =~ ^(-|##*)[[:space:]] ]]; then break
+            else
+              printf '%s\n' "${line:2}" >> ReleaseNotes.txt
+            fi
+          done < README.md
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: ${{ steps.release-notes.outputs.name }}
+          files: '*.zip'
+          body_path: ReleaseNotes.txt

@@ -1,0 +1,18 @@
+# Lua scripts for AviUtl
+[*.{obj,anm,scn,cam,tra}]
+indent_style = tab
+indent_size = 4
+charset = unset
+end_of_line = crlf
+
+# Lua library loaded for AviUtl
+[*.lua]
+indent_style = tab
+indent_size = 4
+charset = unset
+
+# GLSL shaders
+[*.{frag,vert}]
+indent_style = tab
+indent_size = 4
+

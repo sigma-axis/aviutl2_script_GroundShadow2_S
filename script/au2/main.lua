@@ -1,113 +1,118 @@
---[[
-MIT License
-Copyright (c) 2025-2026 sigma-axis
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-https://mit-license.org/
-]]
---information:GroundShadow2_S v1.20 (for beta43b) by σ軸
+--information:GroundShadow2_S ${PACKAGE_VERSION} by ${AUTHOR}
 --label:装飾
 --filter
---require:2003900
---track@ground_angle:地面角度,-1800,1800,0,0.01,水平,0.1
---track@light_angle:光源角度,-1800,1800,-45,0.01,水平,0.1
---track@light_slope:光源傾斜,-1600,1600,0,0.01,,0.125
---track@rotation:回転,-3600,3600,0,0.01,水平,0.05
+--require:${LEAST_AVIUTL_VERSION}
+---$track:地面角度, min = -1800, max = 1800, step = 0.01, zero_label = 水平, scale = 0.1
+local ground_angle = 0
+
+---$track:光源角度, min = -1800, max = 1800, step = 0.01, zero_label = 水平, scale = 0.1
+local light_angle = -45
+
+---$track:光源傾斜, min = -1600, max = 1600, step = 0.01, scale = 0.125
+local light_slope = 0
+
+---$track:回転, min = -3600, max = 3600, step = 0.01, zero_label = 水平, scale = 0.05
+local rotation = 0
+
 --group:配置,true
---track@ground_pos_x:地面位置X,-4000,4000,0,0.01,,0.25
---track@ground_pos_y:地面位置Y,-4000,4000,200,0.01,,0.25
---track@ground_pos_z:地面位置Z,-4000,4000,0,0.01,,0.25
+---$track:地面位置X, min = -4000, max = 4000, step = 0.01, scale = 0.25
+local ground_pos_x = 0
+
+---$track:地面位置Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
+local ground_pos_y = 200
+
+---$track:地面位置Z, min = -4000, max = 4000, step = 0.01, scale = 0.25
+local ground_pos_z = 0
+
 --trackgroup@ground_pos_x,ground_pos_y,ground_pos_z:ground_pos_xyz
---track@camera_pos_x:カメラ位置X,-4000,4000,0,0.01,,0.25
---track@camera_pos_y:カメラ位置Y,-4000,4000,-200,0.01,,0.25
+---$track:カメラ位置X, min = -4000, max = 4000, step = 0.01, scale = 0.25
+local camera_pos_x = 0
+
+---$track:カメラ位置Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
+local camera_pos_y = -200
+
 --trackgroup@camera_pos_x,camera_pos_y:camera_pos_xy
---track@camera_fov:視野幅,0,10000,100,0.01,直投影,0.02
---track@pos_x:影位置移動X,-4000,4000,0,0.01,,0.25
---track@pos_y:影位置移動Y,-4000,4000,0,0.01,,0.25
+---$track:視野幅, min = 0, max = 10000, step = 0.01, zero_label = 直投影, scale = 0.02
+local camera_fov = 100
+
+---$track:影位置移動X, min = -4000, max = 4000, step = 0.01, scale = 0.25
+local pos_x = 0
+
+---$track:影位置移動Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
+local pos_y = 0
+
 --trackgroup@pos_x,pos_y:shadow_pos_xy
 --group:色/透明度,false
---color@col:影色,0x000000
---track@col_alpha:影色強さ,0,100,100,0.01
---track@alpha:影の濃さ,0,100,50,0.01
---track@front_alpha:前景透明度,0,100,0,0.01
+---$color:影色
+local col = 0x000000
+
+---$track:影色強さ, min = 0, max = 100, step = 0.01
+local col_alpha = 100
+
+---$track:影の濃さ, min = 0, max = 100, step = 0.01
+local alpha = 50
+
+---$track:前景透明度, min = 0, max = 100, step = 0.01
+local front_alpha = 0
+
 --group:ぼかし設定,false
---track@conic_blur:光分散,0,70,5,0.001
---track@edge_blur:境界ぼかし,0,500,4,0.01
---track@len:影の範囲,0,4000,0,0.1,全体,0.25
---track@tip_blur:先端ぼかし,0,2000,0,1,,0.25
+---$track:光分散, min = 0, max = 70, step = 0.001
+local conic_blur = 5
+
+---$track:境界ぼかし, min = 0, max = 500, step = 0.01
+local edge_blur = 4
+
+---$track:影の範囲, min = 0, max = 4000, step = 0.1, zero_label = 全体, scale = 0.25
+local len = 0
+
+---$track:先端ぼかし, min = 0, max = 2000, step = 1, scale = 0.25
+local tip_blur = 0
+
 --group:描画設定,false
---check@draw:影を別オブジェクトで描画,false
---select@blend:合成モード=0,通常=0,加算=1,減算=2,乗算=3,スクリーン=4,オーバーレイ=5,比較(明)=6,比較(暗)=7,輝度=8,色差=9,陰影=10,明暗=11,差分=12
+---$checksection:影を別オブジェクトで描画
+local draw = false
+
+---$select:合成モード
+---通常 = 0
+---加算 = 1
+---減算 = 2
+---乗算 = 3
+---スクリーン = 4
+---オーバーレイ = 5
+---比較(明) = 6
+---比較(暗) = 7
+---輝度 = 8
+---色差 = 9
+---陰影 = 10
+---明暗 = 11
+---差分 = 12
+local blend = 0
+
 --group:その他,false
---track@quality:精度,1,9801,529,1
---track@max_w:画像最大幅,1024,16384,2000,1,,0.125
---track@max_h:画像最大高さ,1024,16384,2000,1,,0.125
---value@PI:PI,{}
+---$track:精度, min = 1, max = 9801, step = 1
+local quality = 529
+
+---$track:画像最大幅, min = 1024, max = 16384, step = 1, scale = 0.125
+local max_w = 2000
+
+---$track:画像最大高さ, min = 1024, max = 16384, step = 1, scale = 0.125
+local max_h = 2000
+
+---$value:PI
+local PI = {}
+
 --group:互換対応(将来削除予定),false
---value@ground_pos:地面位置,{}
---value@camera_pos:カメラ位置,{}
---value@pos:影位置移動,{}
+---$value:地面位置
+local ground_pos = {}
+
+---$value:カメラ位置
+local camera_pos = {}
+
+---$value:影位置移動
+local pos = {}
+
 --[[pixelshader@proj_blur:
-Texture2D src : register(t0);
-cbuffer constant0 : register(b0) {
-	float2 size_src, ofs_src;
-	float3 cam;
-	float alpha1;
-	float4 plane;
-	float3 l_dir; float quality;
-	float3 l_ddir0, l_ddir1;
-};
-SamplerState s : register(s0);
-
-float4 pick_color(float2 pos)
-{
-	return src.Sample(s, pos / size_src);
-}
-float4 proj_blur(float4 pos : SV_Position) : SV_Target
-{
-	float3 pt = float3(pos.xy, 0);
-	if (cam.z < 0) {
-		float3 ray = pt - cam;
-		float t = dot(plane.xyz, ray), v = dot(plane, float4(cam, 1));
-		if ((t <= 0 && v < 0) || (t >= 0 && v > 0)) discard;
-		pt = cam - (v == 0 ? 0 : v / t) * ray;
-	}
-	else {
-		if (plane.z == 0) discard;
-		float v = dot(plane, float4(pt, 1));
-		pt.z = -v / plane.z;
-	}
-	const float2 XY = pt.xy + ofs_src; const float Z = pt.z;
-
-	float4 color = 0.0;
-	const int N = int(quality), Q = N * N;
-	for (int i = -N; i <= N; i++) {
-		for (int j = -N; j <= N; j++) {
-			if (i * i + j * j > Q) continue;
-
-			const float3 l = l_dir + i * l_ddir0 + j * l_ddir1;
-			color += l.z == 0 ? 0 : pick_color(XY - (Z / l.z) * l.xy);
-		}
-	}
-	return saturate(alpha1 * color);
-}
+---$include "proj_blur.hlsl"
 ]]
 local obj, tonumber, type, math = obj, tonumber, type, math;
 
@@ -115,6 +120,8 @@ local obj, tonumber, type, math = obj, tonumber, type, math;
 obj.setanchor("ground_pos_x,ground_pos_y,ground_pos_z", 0, "arm", "color", 0x40ff00, "xyz");
 obj.setanchor("camera_pos_x,camera_pos_y", 0, "arm", "color", 0x4040ff);
 obj.setanchor("pos_x,pos_y", 0, "line", "color", 0xff4040);
+
+--#region PI / normalize parameters.
 
 -- take parameters.
 --[==[
@@ -221,6 +228,8 @@ else
 	max_w = math.max(math.min(math.floor(max_w), W), obj.w);
 	max_h = math.max(math.min(math.floor(max_h), H), obj.h);
 end
+
+--#endregion PI / normalize parameters.
 
 -- further calculation of parameters.
 local function normalize(x, y, z)
